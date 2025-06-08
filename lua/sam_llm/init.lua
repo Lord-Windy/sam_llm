@@ -3,7 +3,7 @@ local M = {}
 local defaults = {
   model = "something",
   endpoint = "something",
-  api_key = nil,
+  api_key = "",
 }
 
 local function sam_llm_debug(text)
@@ -13,7 +13,7 @@ end
 function M.setup(opts)
   sam_llm_debug("HELLO FROM SETUP")
   M.config = vim.tbl_deep_extend("force", {}, defaults, opts or {})
-  if not M.config.api_key then
+  if M.config.api_key == "" then
     M.config.api_key = os.getenv("ANTHROPIC_API_KEY")
   end
 end
