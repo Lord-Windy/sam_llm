@@ -27,26 +27,41 @@ local function append_log(text)
   end
 end
 
+local function generate_comment_processing_json(content)
+  local message_data = {
+    model = "claude-sonnet-4-0",
+    max_tokens = 30000,
+    temperature = 1,
+    thinking = {
+      type = "enabled",
+      budget_tokens = 1000
+    },
+    system =
+    "You are a world class writer. You are my assistant and your job is to help me write documentation and prose were appropriate. Please read the comments in this file, you can find them by looking for any << >> blocks. Once read replace the block with what is asked. You are not to edit or change text outside of those sections.",
+    messages = {
+      {
+        role = "user",
+        content = {
+          {
+            type = "text",
+            text = content
+          }
+        }
+      }
+    }
+  }
+
+  return vim.json.encode(message_data)
+end
+
 function M.process(_)
   -- grab the entire contents of the current buffer
   local bufnr = vim.api.nvim_get_current_buf()
   local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
   local text = table.concat(lines, "\n")
 
-  -- echo the buffer text for debugging
-  sam_llm_debug(text)
-
   -- create payload for Anthropic Claude
-  local payload = {
-    model = M.config.model,
-    prompt = table.concat({
-      "Please read the comments in the following file and return the file ",
-      "with those comments edited and completed. Comments that you need to fill out ",
-      "are surrounded by << >>. Anything else you are to read as context but do not change.",
-      "You are an assistant helping me make my markdown documents better:\n\n",
-      text,
-    }, " "),
-  }
+  local payload = generate_comment_processing_json(text)
 
   -- send the payload using curl
   local cmd = {
@@ -56,6 +71,8 @@ function M.process(_)
     "POST",
     "-H",
     "Content-Type: application/json",
+    "-H",
+    "anthropic-version: 2023-06-01",
     "-H",
     "x-api-key: " .. M.config.api_key,
     "-d",
@@ -67,4 +84,3 @@ function M.process(_)
 end
 
 return M
-
