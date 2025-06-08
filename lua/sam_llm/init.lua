@@ -33,7 +33,6 @@ local function generate_comment_processing_json(content)
   local message_data = {
     model = M.config.model,
     max_tokens = 30000,
-    temperature = 1,
     thinking = {
       type = "enabled",
       budget_tokens = 1000
@@ -43,12 +42,7 @@ local function generate_comment_processing_json(content)
     messages = {
       {
         role = "user",
-        content = {
-          {
-            type = "text",
-            text = content
-          }
-        }
+        content = content
       }
     }
   }
@@ -64,6 +58,8 @@ function M.process(_)
 
   -- create payload for Anthropic Claude
   local payload = generate_comment_processing_json(text)
+
+  append_log(payload)
 
   -- send the payload using curl
   local cmd = {
