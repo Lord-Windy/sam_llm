@@ -13,10 +13,18 @@ function M.setup(opts)
   end
 end
 
-
-
 local function sam_llm_debug(text)
   vim.notify(text, vim.log.levels.DEBUG)
+end
+
+local log_file = vim.fn.stdpath("cache") .. "/sam_llm.log"
+
+local function append_log(text)
+  local f = io.open(log_file, "a")
+  if f then
+    f:write(os.date("%Y-%m-%d %H:%M:%S") .. " " .. text .. "\n")
+    f:close()
+  end
 end
 
 function M.process(_)
@@ -54,7 +62,9 @@ function M.process(_)
     vim.fn.json_encode(payload),
     M.config.endpoint,
   }
-  vim.fn.system(cmd)
+  local result = vim.fn.system(cmd)
+  append_log(result)
 end
 
 return M
+
