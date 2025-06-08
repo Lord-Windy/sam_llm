@@ -11,7 +11,6 @@ local function sam_llm_debug(text)
 end
 
 function M.setup(opts)
-  sam_llm_debug("HELLO FROM SETUP")
   M.config = vim.tbl_deep_extend("force", {}, defaults, opts or {})
   if M.config.api_key == "" then
     M.config.api_key = os.getenv("ANTHROPIC_API_KEY")
@@ -28,14 +27,12 @@ local function append_log(text)
   end
 end
 
---[[   --]]
-
 local function generate_comment_processing_json(content)
   local message_data = {
     model = M.config.model,
     thinking = {
       type = "enabled",
-      budget_tokens = 1024
+      budget_tokens = 2048
     },
     system =
     "You are a world class writer. You are my assistant and your job is to help me write documentation and prose were appropriate. Please read the comments in this file, you can find them by looking for any << >> blocks. Once read replace the block with what is asked. You are not to edit or change text outside of those sections.",
@@ -59,8 +56,6 @@ function M.process(_)
 
   -- create payload for Anthropic Claude
   local payload = generate_comment_processing_json(text)
-
-  append_log(payload)
 
   -- send the payload using curl
   local cmd = {
