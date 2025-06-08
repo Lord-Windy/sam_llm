@@ -4,6 +4,8 @@ local defaults = {
   model = "claude-sonnet-4-0",
   endpoint = "https://api.anthropic.com/v1/messages",
   api_key = "",
+  backup_original = true,
+  backup_response = true,
 }
 
 local function sam_llm_debug(text)
@@ -18,6 +20,14 @@ function M.setup(opts)
 end
 
 local log_file = vim.fn.stdpath("cache") .. "/sam_llm.log"
+
+local cache_root = vim.fn.stdpath("cache") .. "/sam_lua"
+
+local function ensure_dir(dir)
+  if vim.fn.isdirectory(dir) == 0 then
+    vim.fn.mkdir(dir, "p")
+  end
+end
 
 local function append_log(text)
   local f = io.open(log_file, "a")
@@ -54,6 +64,18 @@ function M.process(_)
   local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
   local text = table.concat(lines, "\n")
 
+  -- create backup of the original buffer when enabled
+  if M.config.backup_original then
+    local bufname = vim.api.nvim_buf_get_name(bufnr)
+    local basename = vim.fn.fnamemodify(bufname, ":t")
+    local day = os.date("%Y-%m-%d")
+    local timestamp = os.date("%Y-%m-%dT%H-%M-%S")
+    local dir = cache_root .. "/" .. day
+    ensure_dir(dir)
+    local outfile = string.format("%s/%s-%s.orig", dir, basename, timestamp)
+    vim.fn.writefile(lines, outfile)
+  end
+
   -- create payload for Anthropic Claude
   local payload = generate_comment_processing_json(text)
 
@@ -76,6 +98,38 @@ function M.process(_)
 
   local result = vim.fn.system(cmd)
   append_log(result)
+
+  local ok, decoded = pcall(vim.json.decode, result)
+  if not ok then
+    sam_llm_debug("Error decoding response: " .. decoded)
+    return
+  end
+
+  local collected = {}
+  if decoded and decoded.content and type(decoded.content) == "table" then
+    for _, item in ipairs(decoded.content) do
+      if item.type == "text" and item.text then
+        table.insert(collected, item.text)
+      end
+    end
+  end
+
+  local new_text = table.concat(collected, "\n")
+  local new_lines = vim.split(new_text, "\n")
+
+  if M.config.backup_response then
+    local bufname = vim.api.nvim_buf_get_name(bufnr)
+    local basename = vim.fn.fnamemodify(bufname, ":t")
+    local day = os.date("%Y-%m-%d")
+    local timestamp = os.date("%Y-%m-%dT%H-%M-%S")
+    local dir = cache_root .. "/" .. day
+    ensure_dir(dir)
+    local outfile = string.format("%s/%s-%s.response", dir, basename, timestamp)
+    vim.fn.writefile(new_lines, outfile)
+  end
+
+  -- replace the buffer with the new content
+  vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, new_lines)
 end
 
 return M
