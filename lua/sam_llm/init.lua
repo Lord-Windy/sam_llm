@@ -69,7 +69,6 @@ function M.process(_)
     --"-s",
     "-X",
     "POST",
-    "-o saved",
     "-H",
     "Content-Type: application/json",
     "-H",
@@ -77,7 +76,7 @@ function M.process(_)
     "-H",
     "x-api-key: " .. M.config.api_key,
     "-d",
-    vim.fn.json_encode(payload),
+    payload,
     M.config.endpoint,
   }
 
