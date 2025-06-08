@@ -3,19 +3,21 @@ local M = {}
 local defaults = {
   model = "something",
   endpoint = "something",
-  api_key = "",
+  api_key = nil,
 }
-
-function M.setup(opts)
-  M.config = vim.tbl_deep_extend("force", {}, defaults, opts or {})
-  if M.config.api_key == "" then
-    M.config.api_key = os.getenv("ANTHROPIC_API_KEY")
-  end
-end
 
 local function sam_llm_debug(text)
   vim.notify(text, vim.log.levels.DEBUG)
 end
+
+function M.setup(opts)
+  sam_llm_debug("HELLO FROM SETUP")
+  M.config = vim.tbl_deep_extend("force", {}, defaults, opts or {})
+  if not M.config.api_key then
+    M.config.api_key = os.getenv("ANTHROPIC_API_KEY")
+  end
+end
+
 
 local log_file = vim.fn.stdpath("cache") .. "/sam_llm.log"
 
