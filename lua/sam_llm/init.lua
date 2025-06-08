@@ -9,7 +9,9 @@ function M.setup(opts)
   M.config = vim.tbl_deep_extend("force", {}, defaults, opts or {})
 end
 
-local function sam_llm_debug(text) 
+
+
+local function sam_llm_debug(text)
   vim.notify(text, vim.log.levels.DEBUG)
 end
 
