@@ -28,16 +28,18 @@ local function append_log(text)
   end
 end
 
-local function generate_comment_processing_json(content)
-  local message_data = {
-    model = M.config.model,
-    max_tokens = 30000,
-    thinking = {
+--[[thinking = {
       type = "enabled",
       budget_tokens = 1000
     },
     system =
     "You are a world class writer. You are my assistant and your job is to help me write documentation and prose were appropriate. Please read the comments in this file, you can find them by looking for any << >> blocks. Once read replace the block with what is asked. You are not to edit or change text outside of those sections.",
+    --]]
+
+local function generate_comment_processing_json(content)
+  local message_data = {
+    model = M.config.model,
+    max_tokens = 30000,
     messages = {
       {
         role = "user",
