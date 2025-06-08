@@ -77,6 +77,9 @@ function M.process(_)
     vim.fn.json_encode(payload),
     M.config.endpoint,
   }
+
+  append_log(cmd)
+
   local result = vim.fn.system(cmd)
   append_log(result)
 end
