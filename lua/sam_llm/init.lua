@@ -68,7 +68,7 @@ function M.process(_)
   -- send the payload using curl
   local cmd = {
     "curl",
-    "-s",
+    --"-s",
     "-X",
     "POST",
     "-H",
