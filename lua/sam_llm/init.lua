@@ -40,8 +40,10 @@ function M.process(_)
   local payload = {
     model = M.config.model,
     prompt = table.concat({
-      "Please read the comments in the following file and return the file",
-      "with those comments edited and completed:\n\n",
+      "Please read the comments in the following file and return the file ",
+      "with those comments edited and completed. Comments that you need to fill out ",
+      "are surrounded by << >>. Anything else you are to read as context but do not change.",
+      "You are an assistant helping me make my markdown documents better:\n\n",
       text,
     }, " "),
   }
