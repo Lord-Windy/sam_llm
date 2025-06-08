@@ -38,6 +38,9 @@ local function append_log(text)
 end
 
 local function generate_comment_processing_json(content)
+
+  local payload = "Please read the markdown file below and fill in all sections marked with << >>. Replace each << >> section with appropriate content based on the context. Return the complete markdown file with all << >> sections filled in. Do not add any additional commentary, explanations, or text outside of the markdown file itself. \n\n" .. content
+
   local message_data = {
     model = M.config.model,
     thinking = {
@@ -45,12 +48,12 @@ local function generate_comment_processing_json(content)
       budget_tokens = 2048
     },
     system =
-    "You are a world class writer. You are my assistant and your job is to help me write documentation and prose were appropriate. Please read the comments in this file, you can find them by looking for any << >> blocks. Once read replace the block with what is asked. You are not to edit or change text outside of those sections.",
+    "You are a world class writer. You are my assistant and your job is to help me write documentation and prose were appropriate.",
     max_tokens = 8000,
     messages = {
       {
         role = "user",
-        content = content
+        content = payload
       }
     }
   }
