@@ -18,7 +18,6 @@ function M.setup(opts)
   end
 end
 
-
 local log_file = vim.fn.stdpath("cache") .. "/sam_llm.log"
 
 local function append_log(text)
@@ -78,7 +77,7 @@ function M.process(_)
     M.config.endpoint,
   }
 
-  append_log(cmd)
+  append_log(vim.inspect(cmd))
 
   local result = vim.fn.system(cmd)
   append_log(result)
