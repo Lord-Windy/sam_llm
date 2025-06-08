@@ -35,11 +35,11 @@ local function generate_comment_processing_json(content)
     model = M.config.model,
     thinking = {
       type = "enabled",
-      budget_tokens = 1000
+      budget_tokens = 1024
     },
     system =
     "You are a world class writer. You are my assistant and your job is to help me write documentation and prose were appropriate. Please read the comments in this file, you can find them by looking for any << >> blocks. Once read replace the block with what is asked. You are not to edit or change text outside of those sections.",
-    max_tokens = 4096,
+    max_tokens = 8000,
     messages = {
       {
         role = "user",
