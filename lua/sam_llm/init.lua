@@ -69,6 +69,7 @@ function M.process(_)
     --"-s",
     "-X",
     "POST",
+    "-o saved",
     "-H",
     "Content-Type: application/json",
     "-H",
