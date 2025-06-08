@@ -28,17 +28,17 @@ local function append_log(text)
   end
 end
 
---[[thinking = {
+--[[   --]]
+
+local function generate_comment_processing_json(content)
+  local message_data = {
+    model = M.config.model,
+    thinking = {
       type = "enabled",
       budget_tokens = 1000
     },
     system =
     "You are a world class writer. You are my assistant and your job is to help me write documentation and prose were appropriate. Please read the comments in this file, you can find them by looking for any << >> blocks. Once read replace the block with what is asked. You are not to edit or change text outside of those sections.",
-    --]]
-
-local function generate_comment_processing_json(content)
-  local message_data = {
-    model = M.config.model,
     max_tokens = 4096,
     messages = {
       {
@@ -65,8 +65,7 @@ function M.process(_)
   -- send the payload using curl
   local cmd = {
     "curl",
-    "-v",
-    --"-s",
+    "-s",
     "-X",
     "POST",
     "-H",
@@ -79,8 +78,6 @@ function M.process(_)
     payload,
     M.config.endpoint,
   }
-
-  append_log(vim.inspect(cmd))
 
   local result = vim.fn.system(cmd)
   append_log(result)
