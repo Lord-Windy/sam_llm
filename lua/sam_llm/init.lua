@@ -39,7 +39,7 @@ end
 local function generate_comment_processing_json(content)
   local message_data = {
     model = M.config.model,
-    max_tokens = 30000,
+    max_tokens = 4096,
     messages = {
       {
         role = "user",
@@ -65,6 +65,7 @@ function M.process(_)
   -- send the payload using curl
   local cmd = {
     "curl",
+    "-v",
     --"-s",
     "-X",
     "POST",
