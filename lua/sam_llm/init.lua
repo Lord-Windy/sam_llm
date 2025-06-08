@@ -1,8 +1,8 @@
 local M = {}
 
 local defaults = {
-  model = "something",
-  endpoint = "something",
+  model = "claude-sonnet-4-0",
+  endpoint = "https://api.anthropic.com/v1/messages",
   api_key = "",
 }
 
@@ -31,7 +31,7 @@ end
 
 local function generate_comment_processing_json(content)
   local message_data = {
-    model = "claude-sonnet-4-0",
+    model = M.config.model,
     max_tokens = 30000,
     temperature = 1,
     thinking = {
