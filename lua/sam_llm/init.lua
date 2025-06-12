@@ -45,11 +45,11 @@ local function generate_comment_processing_json(content)
     model = M.config.model,
     thinking = {
       type = "enabled",
-      budget_tokens = 2048
+      budget_tokens = 4096
     },
     system =
     "You are a world class writer. You are my assistant and your job is to help me write documentation and prose were appropriate.",
-    max_tokens = 8000,
+    max_tokens = 16000,
     messages = {
       {
         role = "user",
