@@ -1,7 +1,7 @@
 local M = {}
 
 local defaults = {
-  model = "claude-opus-4-0",
+  model = "claude-opus-4-1",
   endpoint = "https://api.anthropic.com/v1/messages",
   api_key = "",
   backup_original = true,
